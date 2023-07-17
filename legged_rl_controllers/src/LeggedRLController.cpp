@@ -239,73 +239,63 @@ void LeggedRLController::loadPolicyModel(const std::string& policy_file_path) {
 
 void LeggedRLController::computeActions() {
   // create input tensor object
-  Ort::MemoryInfo memory_info = Ort::MemoryInfo::CreateCpu(OrtAllocatorType::OrtArenaAllocator, OrtMemType::OrtMemTypeDefault);
-  std::vector<Ort::Value> input_values;
-  input_values.push_back(Ort::Value::CreateTensor<tensor_element_t>(memory_info, observations_.data(), observations_.size(),
-                                                                    inputShapes_[0].data(), inputShapes_[0].size()));
+  Ort::MemoryInfo memoryInfo = Ort::MemoryInfo::CreateCpu(OrtAllocatorType::OrtArenaAllocator, OrtMemType::OrtMemTypeDefault);
+  std::vector<Ort::Value> inputValues;
+  inputValues.push_back(Ort::Value::CreateTensor<tensor_element_t>(memoryInfo, observations_.data(), observations_.size(),
+                                                                   inputShapes_[0].data(), inputShapes_[0].size()));
   // run inference
-  Ort::RunOptions run_options;
-  std::vector<Ort::Value> output_values = sessionPtr_->Run(run_options, inputNames_.data(), input_values.data(), 1, outputNames_.data(), 1);
+  Ort::RunOptions runOptions;
+  std::vector<Ort::Value> outputValues = sessionPtr_->Run(runOptions, inputNames_.data(), inputValues.data(), 1, outputNames_.data(), 1);
 
   for (int i = 0; i < actionsSize_; i++) {
-    actions_[i] = *(output_values[0].GetTensorMutableData<tensor_element_t>() + i);
+    actions_[i] = *(outputValues[0].GetTensorMutableData<tensor_element_t>() + i);
   }
 }
 
 void LeggedRLController::computeObservation(const ros::Time& time, const ros::Duration& period) {
-  // Angular from IMU
-  Eigen::Quaternion<scalar_t> quat(imuSensorHandles_.getOrientation()[3], imuSensorHandles_.getOrientation()[0],
-                                   imuSensorHandles_.getOrientation()[1], imuSensorHandles_.getOrientation()[2]);
-  Eigen::Matrix<scalar_t, 3, 3> inverseRot = getRotationMatrixFromZyxEulerAngles(quatToZyx(quat)).inverse();
+  const auto& info = leggedInterface_->getCentroidalModelInfo();
 
-  // linear velocity (base coordinate)
-  Eigen::Matrix<scalar_t, 3, 1> g(0, 0, -9.81);
-  Eigen::Matrix<scalar_t, 3, 1> imuAccel(imuSensorHandles_.getLinearAcceleration()[0], imuSensorHandles_.getLinearAcceleration()[1],
-                                         imuSensorHandles_.getLinearAcceleration()[2]);
-  //  auto base_lin_vel = inverse_rot * baseLinVel_;
-  baseLinVel_ = inverseRot * rbdState_.segment<3>(21);
+  vector3_t zyx = rbdState_.segment<3>(0);
+  matrix_t inverseRot = getRotationMatrixFromZyxEulerAngles(zyx).inverse();
 
+  // linear velocity (base frame)
+  vector3_t baseLinVel = inverseRot * rbdState_.segment<3>(info.generalizedCoordinatesNum + 3);
   // Angular velocity
-  Eigen::Matrix<scalar_t, 3, 1> baseAngVel(imuSensorHandles_.getAngularVelocity()[0], imuSensorHandles_.getAngularVelocity()[1],
-                                           imuSensorHandles_.getAngularVelocity()[2]);
+  vector3_t baseAngVel(imuSensorHandles_.getAngularVelocity()[0], imuSensorHandles_.getAngularVelocity()[1],
+                       imuSensorHandles_.getAngularVelocity()[2]);
 
   // Projected gravity
-  Eigen::Matrix<scalar_t, 3, 1> gravityVector(0, 0, -1);
-  Eigen::Matrix<scalar_t, 3, 1> projectedGravity(inverseRot * gravityVector);
+  vector3_t gravityVector(0, 0, -1);
+  vector3_t projectedGravity(inverseRot * gravityVector);
 
   // command
-  Eigen::Matrix<scalar_t, 3, 1> command = command_;
+  vector3_t command = command_;
 
   // dof position and dof velocity
-  Eigen::Matrix<scalar_t, 12, 1> dofPose;
-  Eigen::Matrix<scalar_t, 12, 1> dofVel;
-  // The joint order in the message is different from the definition
-  // of the joint order in the model so needs to be exchanged
-  for (int i = 0; i < hybridJointHandles_.size(); i++) {
-    dofVel(i) = hybridJointHandles_[i].getVelocity();
-    dofPose(i) = hybridJointHandles_[i].getPosition();
-  }
+  vector_t jointPos = rbdState_.segment(6, info.actuatedDofNum);
+  vector_t jointVel = rbdState_.segment(6 + info.generalizedCoordinatesNum, info.actuatedDofNum);
 
   // actions
-  Eigen::Matrix<scalar_t, 12, 1> actions(lastActions_);
+  vector_t actions(lastActions_);
 
   // heights
+  int sampleCount = 187;
   scalar_t measuredHeight = 0.0;
-  scalar_t baseHeight = basePosition_.z();
-  Eigen::Matrix<scalar_t, 187, 1> heights;
+  scalar_t baseHeight = rbdState_(5);
+  vector_t heights(sampleCount);
   heights.fill(baseHeight - 0.5 - measuredHeight);
 
   ObsScales& obsScales = robotCfg_.obsScales;
-  Eigen::Matrix<scalar_t, 3, 3> commandScaler = Eigen::DiagonalMatrix<scalar_t, 3>(obsScales.linVel, obsScales.linVel, obsScales.angVel);
+  matrix_t commandScaler = Eigen::DiagonalMatrix<scalar_t, 3>(obsScales.linVel, obsScales.linVel, obsScales.angVel);
 
-  Eigen::Matrix<scalar_t, 235, 1> obs;
+  vector_t obs(235);
   // clang-format off
-  obs << baseLinVel_ * obsScales.linVel,
+  obs << baseLinVel * obsScales.linVel,
       baseAngVel * obsScales.angVel,
       projectedGravity,
       commandScaler * command,
-      (dofPose - defaultJointAngles_) * obsScales.dofPos,
-      dofVel * obsScales.dofVel,
+      (jointPos - defaultJointAngles_) * obsScales.dofPos,
+      jointVel * obsScales.dofVel,
       actions,
       heights * obsScales.heightMeasurements;
   // clang-format on
