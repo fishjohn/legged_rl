@@ -170,7 +170,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 3.14159265"/>
             <geometry>
-                <mesh filename="package://legged_deep_description/meshes/lite3/trunk.dae"/>
+                <mesh filename="package://legged_rl_description/meshes/lite3/trunk.dae"/>
             </geometry>
         </visual>
         <collision>
@@ -210,7 +210,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://legged_deep_description/meshes/lite3/FL_HIP.dae"/>
+                <mesh filename="package://legged_rl_description/meshes/lite3/FL_HIP.dae"/>
             </geometry>
         </visual>
         <!--    <collision>-->
@@ -239,7 +239,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://legged_deep_description/meshes/lite3/L_THIGH.dae"/>
+                <mesh filename="package://legged_rl_description/meshes/lite3/L_THIGH.dae"/>
             </geometry>
         </visual>
         <collision>
@@ -268,7 +268,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://legged_deep_description/meshes/lite3/SHANK.dae"/>
+                <mesh filename="package://legged_rl_description/meshes/lite3/SHANK.dae"/>
             </geometry>
         </visual>
         <collision>
@@ -327,7 +327,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://legged_deep_description/meshes/lite3/FR_HIP.dae"/>
+                <mesh filename="package://legged_rl_description/meshes/lite3/FR_HIP.dae"/>
             </geometry>
         </visual>
         <!--    <collision>-->
@@ -356,7 +356,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://legged_deep_description/meshes/lite3/R_THIGH.dae"/>
+                <mesh filename="package://legged_rl_description/meshes/lite3/R_THIGH.dae"/>
             </geometry>
         </visual>
         <collision>
@@ -385,7 +385,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://legged_deep_description/meshes/lite3/SHANK.dae"/>
+                <mesh filename="package://legged_rl_description/meshes/lite3/SHANK.dae"/>
             </geometry>
         </visual>
         <collision>
@@ -446,7 +446,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://legged_deep_description/meshes/lite3/HL_HIP.dae"/>
+                <mesh filename="package://legged_rl_description/meshes/lite3/HL_HIP.dae"/>
             </geometry>
         </visual>
         <!--    <collision>-->
@@ -475,7 +475,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://legged_deep_description/meshes/lite3/L_THIGH.dae"/>
+                <mesh filename="package://legged_rl_description/meshes/lite3/L_THIGH.dae"/>
             </geometry>
         </visual>
         <collision>
@@ -504,7 +504,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://legged_deep_description/meshes/lite3/SHANK.dae"/>
+                <mesh filename="package://legged_rl_description/meshes/lite3/SHANK.dae"/>
             </geometry>
         </visual>
         <collision>
@@ -564,7 +564,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://legged_deep_description/meshes/lite3/HR_HIP.dae"/>
+                <mesh filename="package://legged_rl_description/meshes/lite3/HR_HIP.dae"/>
             </geometry>
         </visual>
         <!--    <collision>-->
@@ -593,7 +593,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://legged_deep_description/meshes/lite3/R_THIGH.dae"/>
+                <mesh filename="package://legged_rl_description/meshes/lite3/R_THIGH.dae"/>
             </geometry>
         </visual>
         <collision>
@@ -622,7 +622,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <mesh filename="package://legged_deep_description/meshes/lite3/SHANK.dae"/>
+                <mesh filename="package://legged_rl_description/meshes/lite3/SHANK.dae"/>
             </geometry>
         </visual>
         <collision>
