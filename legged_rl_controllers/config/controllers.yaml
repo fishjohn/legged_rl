@@ -4,3 +4,5 @@ controllers:
     publish_rate: 100
   legged_rl_controller:
     type: legged/LeggedRLController
+  student_policy_controller:
+    type: legged/StudentPolicyController

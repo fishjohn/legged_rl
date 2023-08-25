@@ -26,5 +26,6 @@
 
     <export>
         <controller_interface plugin="${prefix}/legged_rl_controllers_plugins.xml"/>
+        <controller_interface plugin="${prefix}/student_policy_controller_plugins.xml"/>
     </export>
 </package>

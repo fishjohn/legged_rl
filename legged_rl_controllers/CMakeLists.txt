@@ -72,19 +72,17 @@ target_link_libraries(${PROJECT_NAME}
         )
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 14)
 
-# Target trajectories publish node
-#add_executable(legged_target_trajectories_publisher
-#        src/TargetTrajectoriesPublisher.cpp
-#        )
-#add_dependencies(legged_target_trajectories_publisher
-#        ${PROJECT_NAME}
-#        ${catkin_EXPORTED_TARGETS}
-#        )
-#target_link_libraries(legged_target_trajectories_publisher
-#        ${PROJECT_NAME}
-#        ${catkin_LIBRARIES}
-#        )
-#target_compile_options(legged_target_trajectories_publisher PRIVATE ${OCS2_CXX_FLAGS})
+add_library(student_policy_controller
+        src/StudentPolicyController.cpp
+        )
+
+target_link_libraries(student_policy_controller
+        ${catkin_LIBRARIES}
+        ${pinocchio_LIBRARIES}
+        ${TORCH_LIBRARIES}
+        onnxruntime
+        )
+set_property(TARGET student_policy_controller PROPERTY CXX_STANDARD 14)
 
 #########################
 ###   CLANG TOOLING   ###
@@ -120,5 +118,9 @@ install(DIRECTORY include/${PROJECT_NAME}/
 # Mark other files for installation
 install(
         FILES legged_rl_controllers_plugins.xml
+        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+install(
+        FILES student_policy_controller_plugins.xml
         DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )

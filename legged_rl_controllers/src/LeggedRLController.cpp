@@ -216,9 +216,9 @@ void LeggedRLController::loadPolicyModel(const std::string& policy_file_path) {
   // create env
   onnxEnvPrt_.reset(new Ort::Env(ORT_LOGGING_LEVEL_WARNING, "LeggedOnnxController"));
   // create session
-  Ort::SessionOptions session_options;
-  session_options.SetInterOpNumThreads(1);
-  sessionPtr_ = std::make_unique<Ort::Session>(*onnxEnvPrt_, policy_file_path.c_str(), session_options);
+  Ort::SessionOptions sessionOptions;
+  sessionOptions.SetInterOpNumThreads(1);
+  sessionPtr_ = std::make_unique<Ort::Session>(*onnxEnvPrt_, policy_file_path.c_str(), sessionOptions);
   // get input and output info
   inputNames_.clear();
   outputNames_.clear();
@@ -323,7 +323,7 @@ void LeggedRLController::baseStateRecCallback(const gazebo_msgs::ModelStates& ms
 void LeggedRLController::cmdVelCallback(const geometry_msgs::Twist& msg) {
   command_[0] = msg.linear.x;
   command_[1] = msg.linear.y;
-  command_[2] = msg.linear.z;
+  command_[2] = msg.angular.z;
 }
 
 bool LeggedRLController::parseCfg(ros::NodeHandle& nh) {

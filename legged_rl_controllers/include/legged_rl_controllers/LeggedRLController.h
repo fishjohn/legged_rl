@@ -71,6 +71,7 @@ struct RobotCfg {
 class LeggedRLController
     : public controller_interface::MultiInterfaceController<HybridJointInterface, hardware_interface::ImuSensorInterface,
                                                             ContactSensorInterface> {
+ public:
   using tensor_element_t = float;
   using ObsScales = RobotCfg::ObsScales;
   using ControlCfg = RobotCfg::ControlCfg;
@@ -78,7 +79,6 @@ class LeggedRLController
 
   enum class Mode : uint8_t { LIE, STAND, WALK };
 
- public:
   LeggedRLController() = default;
   ~LeggedRLController() override;
   bool init(hardware_interface::RobotHW* robotHw, ros::NodeHandle& controllerNH) override;
@@ -93,12 +93,12 @@ class LeggedRLController
                                     bool verbose);
   virtual void setupStateEstimate(const std::string& taskFile, bool verbose);
 
-  bool parseCfg(ros::NodeHandle& nh);
+  virtual bool parseCfg(ros::NodeHandle& nh);
+  virtual void computeActions();
+  virtual void computeObservation(const ros::Time& time, const ros::Duration& period);
   void loadPolicyModel(const std::string& policy_file_path);
-  void computeActions();
-  void computeObservation(const ros::Time& time, const ros::Duration& period);
 
-  void cmdVelCallback(const geometry_msgs::Twist& msg);
+  virtual void cmdVelCallback(const geometry_msgs::Twist& msg);
   void baseStateRecCallback(const gazebo_msgs::ModelStates& msg);
 
   std::shared_ptr<StateEstimateBase> stateEstimate_;
@@ -115,7 +115,7 @@ class LeggedRLController
   hardware_interface::ImuSensorHandle imuSensorHandles_;
   std::vector<ContactSensorHandle> contactHandles_;
 
- private:
+ protected:
   std::atomic_bool controllerRunning_;
   int loopCount_;
   Mode mode_;

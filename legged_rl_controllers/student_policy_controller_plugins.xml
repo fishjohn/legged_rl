@@ -1,0 +1,9 @@
+<library path="lib/libstudent_policy_controller">
+
+    <class name="legged/StudentPolicyController" type="legged::StudentPolicyController"
+           base_class_type="controller_interface::ControllerBase">
+        <description>
+            The student policy controller.
+        </description>
+    </class>
+</library>

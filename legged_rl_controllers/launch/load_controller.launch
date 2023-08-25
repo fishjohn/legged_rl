@@ -11,7 +11,7 @@
     <param name="referenceFile" value="$(find legged_controllers)/config/$(arg robot_type)/reference.info"/>
     <param name="gaitCommandFile" value="$(find legged_controllers)/config/$(arg robot_type)/gait.info"/>
 
-    <arg name="rl_config_file" default="a1_config.yaml"/>
+    <arg name="rl_config_file" default="a1_student_policy.yaml"/>
     <rosparam file="$(find legged_rl_controllers)/config/controllers.yaml" command="load"/>
     <rosparam file="$(find legged_rl_controllers)/config/$(arg rl_config_file)" command="load"/>
 
@@ -19,6 +19,7 @@
           output="screen" args="load
           controllers/joint_state_controller
           controllers/legged_rl_controller
+          controllers/student_policy_controller
 "/>
     <node pkg="legged_controllers" type="legged_target_trajectories_publisher" name="legged_robot_target"
           output="screen"/>
