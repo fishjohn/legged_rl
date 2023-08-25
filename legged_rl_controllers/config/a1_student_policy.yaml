@@ -41,5 +41,4 @@ LeggedRobotCfg:
     observations_size: 144
 
 module:
-  module_path: "/home/luohx/catkin_ws/src/legged_rl/legged_rl_controllers/policy/a1/policy_1.onnx"
   module_dir: "/home/luohx/catkin_ws/src/legged_rl/legged_rl_controllers/policy/a1_student_policy/"

@@ -4,26 +4,25 @@
 
 #pragma once
 
-#include "legged_rl_controllers/LeggedRLController.h"
+#include "legged_rl_controllers/RLControllerBase.h"
 
 namespace legged {
 using namespace ocs2;
 using namespace legged_robot;
 
-class StudentPolicyController : public LeggedRLController {
+class StudentPolicyController : public RLControllerBase {
+  using tensor_element_t = float;
+
  public:
   StudentPolicyController() = default;
   ~StudentPolicyController() override = default;
-  bool init(hardware_interface::RobotHW* robotHw, ros::NodeHandle& controllerNH) override;
-  void update(const ros::Time& time, const ros::Duration& period) override;
 
  protected:
-  //  bool parseCfg(ros::NodeHandle& nh){} override;
+  bool loadModel(ros::NodeHandle& nh) override;
+  bool loadRLCfg(ros::NodeHandle& nh) override;
   void computeActions() override;
-  void computeObservation(const ros::Time& time, const ros::Duration& period) override;
-  void loadModel(const std::string& policyFileDir);
-
-  void cmdVelCallback(const geometry_msgs::Twist& msg) override;
+  void computeObservation() override;
+  void handleWalkMode() override;
 
  private:
   std::string policyModelPath_;
@@ -41,7 +40,17 @@ class StudentPolicyController : public LeggedRLController {
   std::vector<std::vector<int64_t>> encoderOutputShapes_;
   int64_t encoderBatchSize_, encoderSeqLength_, encoderInputDim_;
 
+  RLRobotCfg robotCfg_{};
+  vector3_t baseLinVel_;
+  vector3_t basePosition_;
+  vector_t lastActions_;
+  vector_t defaultJointAngles_;
+
   bool isfirstRecObs_{true};
+  int actionsSize_;
+  int observationSize_;
+  std::vector<tensor_element_t> actions_;
+  std::vector<tensor_element_t> observations_;
   Eigen::Matrix<tensor_element_t, Eigen::Dynamic, 1> proprioHistoryBuffer_;
 };
 

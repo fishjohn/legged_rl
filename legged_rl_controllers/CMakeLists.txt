@@ -61,6 +61,7 @@ link_directories(
 )
 
 add_library(${PROJECT_NAME}
+        src/RLControllerBase.cpp
         src/LeggedRLController.cpp
         )
 
@@ -73,6 +74,7 @@ target_link_libraries(${PROJECT_NAME}
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 14)
 
 add_library(student_policy_controller
+        src/RLControllerBase.cpp
         src/StudentPolicyController.cpp
         )
 
