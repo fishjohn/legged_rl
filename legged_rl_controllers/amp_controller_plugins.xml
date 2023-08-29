@@ -1,0 +1,9 @@
+<library path="lib/libamp_controller">
+
+    <class name="legged/AmpController" type="legged::AmpController"
+           base_class_type="controller_interface::ControllerBase">
+        <description>
+            The amp controller.
+        </description>
+    </class>
+</library>

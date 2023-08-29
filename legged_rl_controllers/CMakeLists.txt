@@ -86,6 +86,19 @@ target_link_libraries(student_policy_controller
         )
 set_property(TARGET student_policy_controller PROPERTY CXX_STANDARD 14)
 
+add_library(amp_controller
+        src/RLControllerBase.cpp
+        src/AmpController.cpp
+        )
+
+target_link_libraries(amp_controller
+        ${catkin_LIBRARIES}
+        ${pinocchio_LIBRARIES}
+        ${TORCH_LIBRARIES}
+        onnxruntime
+        )
+set_property(TARGET amp_controller PROPERTY CXX_STANDARD 14)
+
 #########################
 ###   CLANG TOOLING   ###
 #########################
@@ -124,5 +137,9 @@ install(
 )
 install(
         FILES student_policy_controller_plugins.xml
+        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+install(
+        FILES amp_controller_plugins.xml
         DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )

@@ -6,3 +6,5 @@ controllers:
     type: legged/LeggedRLController
   student_policy_controller:
     type: legged/StudentPolicyController
+  amp_controller:
+    type: legged/AmpController
