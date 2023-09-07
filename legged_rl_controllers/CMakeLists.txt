@@ -3,17 +3,12 @@ project(legged_rl_controllers)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-## libtorch path
-## TODO: change absolute path to param
-set(Torch_DIR /home/luohx/Library/libtorch/share/cmake/Torch)
-
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED
         COMPONENTS
         roscpp
         legged_common
         legged_interface
-        legged_wbc
         legged_estimation
         controller_interface
         ocs2_legged_robot_ros
@@ -21,7 +16,6 @@ find_package(catkin REQUIRED
         angles
         )
 
-find_package(Torch REQUIRED)
 find_package(onnxruntime REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(pinocchio REQUIRED pinocchio)
@@ -35,7 +29,6 @@ catkin_package(
         roscpp
         legged_common
         legged_interface
-        legged_wbc
         legged_estimation
         controller_interface
         ocs2_legged_robot_ros
@@ -53,7 +46,6 @@ include_directories(
         include
         ${catkin_INCLUDE_DIRS}
         ${pinocchio_INCLUDE_DIRS}
-        ${TORCH_INCLUDE_DIRS}
 )
 
 link_directories(
@@ -68,7 +60,6 @@ add_library(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
         ${catkin_LIBRARIES}
         ${pinocchio_LIBRARIES}
-        ${TORCH_LIBRARIES}
         onnxruntime
         )
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 14)
@@ -81,7 +72,6 @@ add_library(student_policy_controller
 target_link_libraries(student_policy_controller
         ${catkin_LIBRARIES}
         ${pinocchio_LIBRARIES}
-        ${TORCH_LIBRARIES}
         onnxruntime
         )
 set_property(TARGET student_policy_controller PROPERTY CXX_STANDARD 14)
@@ -94,7 +84,6 @@ add_library(amp_controller
 target_link_libraries(amp_controller
         ${catkin_LIBRARIES}
         ${pinocchio_LIBRARIES}
-        ${TORCH_LIBRARIES}
         onnxruntime
         )
 set_property(TARGET amp_controller PROPERTY CXX_STANDARD 14)
