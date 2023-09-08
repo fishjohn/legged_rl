@@ -99,6 +99,7 @@ class RLControllerBase : public controller_interface::MultiInterfaceController<H
   Mode mode_;
   int64_t loopCount_;
   vector3_t command_;
+  RLRobotCfg robotCfg_{};
 
   std::shared_ptr<StateEstimateBase> stateEstimate_;
   std::shared_ptr<LeggedInterface> leggedInterface_;

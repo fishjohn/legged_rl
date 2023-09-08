@@ -40,7 +40,6 @@ class StudentPolicyController : public RLControllerBase {
   std::vector<std::vector<int64_t>> encoderOutputShapes_;
   int64_t encoderBatchSize_, encoderSeqLength_, encoderInputDim_;
 
-  RLRobotCfg robotCfg_{};
   vector3_t baseLinVel_;
   vector3_t basePosition_;
   vector_t lastActions_;

@@ -9,8 +9,6 @@
 #include "legged_rl_controllers/LeggedRLController.h"
 
 #include <ocs2_centroidal_model/AccessHelperFunctions.h>
-#include <ocs2_centroidal_model/CentroidalModelPinocchioMapping.h>
-#include <ocs2_centroidal_model/FactoryFunctions.h>
 #include <ocs2_centroidal_model/ModelHelperFunctions.h>
 
 #include <angles/angles.h>

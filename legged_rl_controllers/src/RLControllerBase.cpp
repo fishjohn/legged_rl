@@ -24,8 +24,6 @@ bool RLControllerBase::init(hardware_interface::RobotHW* robotHw, ros::NodeHandl
                                                                       leggedInterface_->modelSettings().contactNames3DoF);
   rbdConversions_ = std::make_shared<CentroidalModelRbdConversions>(leggedInterface_->getPinocchioInterface(),
                                                                     leggedInterface_->getCentroidalModelInfo());
-  standJointAngles_.resize(leggedInterface_->getCentroidalModelInfo().actuatedDofNum);
-  loadData::loadEigenMatrix(referenceFile, "defaultJointState", standJointAngles_);
 
   // Load policy model and rl cfg
   if (!loadModel(controllerNH)) {
@@ -36,6 +34,11 @@ bool RLControllerBase::init(hardware_interface::RobotHW* robotHw, ros::NodeHandl
     ROS_ERROR_STREAM("[RLControllerBase] Failed to load the rl config. Ensure the yaml is correct and accessible.");
     return false;
   }
+  standJointAngles_.resize(leggedInterface_->getCentroidalModelInfo().actuatedDofNum);
+  auto& initState = robotCfg_.initState;
+  standJointAngles_ << initState.LF_HAA_joint, initState.LF_HFE_joint, initState.LF_KFE_joint, initState.RF_HAA_joint,
+      initState.RF_HFE_joint, initState.RF_KFE_joint, initState.LH_HAA_joint, initState.LH_HFE_joint, initState.LH_KFE_joint,
+      initState.RH_HAA_joint, initState.RH_HFE_joint, initState.RH_KFE_joint;
 
   // Hardware interface
   auto* hybridJointInterface = robotHw->get<HybridJointInterface>();

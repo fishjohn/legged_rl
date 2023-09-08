@@ -4,8 +4,8 @@
 
     <param name="legged_robot_description" command="cat $(find legged_rl_description)/urdf/$(arg robot_type).urdf"/>
 
-    <node name="generate_urdf" pkg="legged_rl_common" type="generate_urdf.sh" output="screen"
-          args="$(find legged_rl_description)/urdf/$(arg robot_type).urdf "/>
+    <node name="generate_urdf" pkg="legged_common" type="generate_urdf.sh" output="screen"
+          args="$(find legged_unitree_description)/urdf/$(arg robot_type).urdf "/>
 
     <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
     <include file="$(find gazebo_ros)/launch/empty_world.launch"/>

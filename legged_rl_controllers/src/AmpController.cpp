@@ -27,7 +27,7 @@ void AmpController::handleWalkMode() {
   }
 }
 
-bool legged::AmpController::loadModel(ros::NodeHandle& nh) {
+bool AmpController::loadModel(ros::NodeHandle& nh) {
   std::string policyFilePath;
   if (!nh.getParam("/module/module_path", policyFilePath)) {
     ROS_ERROR_STREAM("Get policy path fail from param server, some error occur!");
@@ -61,7 +61,7 @@ bool legged::AmpController::loadModel(ros::NodeHandle& nh) {
   return true;
 }
 
-bool legged::AmpController::loadRLCfg(ros::NodeHandle& nh) {
+bool AmpController::loadRLCfg(ros::NodeHandle& nh) {
   RLRobotCfg::InitState& initState = robotCfg_.initState;
   RLRobotCfg::ControlCfg& controlCfg = robotCfg_.controlCfg;
   RLRobotCfg::ObsScales& obsScales = robotCfg_.obsScales;
@@ -120,7 +120,7 @@ bool legged::AmpController::loadRLCfg(ros::NodeHandle& nh) {
   return (error == 0);
 }
 
-void legged::AmpController::computeActions() {
+void AmpController::computeActions() {
   // create input tensor object
   Ort::MemoryInfo memoryInfo = Ort::MemoryInfo::CreateCpu(OrtAllocatorType::OrtArenaAllocator, OrtMemType::OrtMemTypeDefault);
   std::vector<Ort::Value> inputValues;
@@ -135,7 +135,7 @@ void legged::AmpController::computeActions() {
   }
 }
 
-void legged::AmpController::computeObservation() {
+void AmpController::computeObservation() {
   const auto& info = leggedInterface_->getCentroidalModelInfo();
 
   vector3_t zyx = rbdState_.segment<3>(0);

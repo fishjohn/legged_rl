@@ -49,7 +49,7 @@ catkin build legged_gazebo legged_unitree_description legged_rl_controllers legg
 ### Terminal 1
 
 ```
-roslaunch legged_rl_description empty_world.launch
+roslaunch legged_unitree_description empty_world.launch
 ```
 
 ### Terminal 2
