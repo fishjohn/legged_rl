@@ -10,6 +10,7 @@
     <param name="taskFile" value="$(find legged_controllers)/config/$(arg robot_type)/task.info"/>
     <param name="referenceFile" value="$(find legged_controllers)/config/$(arg robot_type)/reference.info"/>
     <param name="gaitCommandFile" value="$(find legged_controllers)/config/$(arg robot_type)/gait.info"/>
+    <param name="policyFile" value="$(find legged_rl_controllers)/policy/a1/policy_1.onnx"/>
 
     <arg name="rl_config_file" default="a1_config.yaml"/>
     <rosparam file="$(find legged_rl_controllers)/config/controllers.yaml" command="load"/>

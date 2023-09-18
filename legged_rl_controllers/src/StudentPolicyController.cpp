@@ -130,13 +130,12 @@ void StudentPolicyController::computeObservation() {
 bool StudentPolicyController::loadModel(ros::NodeHandle& nh) {
   ROS_INFO_STREAM("load student policy model");
 
-  std::string policyFileDir;
-  if (!nh.getParam("/module/module_dir", policyFileDir)) {
+  std::string policyModelPath;
+  std::string encoderModelPath;
+  if (!nh.getParam("/policyModelPath", policyModelPath) || !nh.getParam("/encoderModelPath", encoderModelPath)) {
     ROS_ERROR_STREAM("Get policy path fail from param server, some error occur!");
     return false;
   }
-  std::string policyModelPath = policyFileDir + "policy_1.onnx";
-  std::string encoderModelPath = policyFileDir + "blind_encoder.onnx";
 
   // create env
   onnxEnvPrt_.reset(new Ort::Env(ORT_LOGGING_LEVEL_WARNING, "LeggedOnnxController"));

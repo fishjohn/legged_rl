@@ -29,7 +29,7 @@ void AmpController::handleWalkMode() {
 
 bool AmpController::loadModel(ros::NodeHandle& nh) {
   std::string policyFilePath;
-  if (!nh.getParam("/module/module_path", policyFilePath)) {
+  if (!nh.getParam("/policyFile", policyFilePath)) {
     ROS_ERROR_STREAM("Get policy path fail from param server, some error occur!");
     return false;
   }
