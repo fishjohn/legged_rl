@@ -1,0 +1,9 @@
+<library path="lib/libtrot_controller">
+
+    <class name="legged/TrotController" type="legged::TrotController"
+           base_class_type="controller_interface::ControllerBase">
+        <description>
+            The tort controller.
+        </description>
+    </class>
+</library>

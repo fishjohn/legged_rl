@@ -8,3 +8,5 @@ controllers:
     type: legged/StudentPolicyController
   amp_controller:
     type: legged/AmpController
+  trot_controller:
+    type: legged/TrotController

@@ -1,0 +1,44 @@
+LeggedRobotCfg:
+  init_state:
+    # target angles [rad] when action = 0.0
+    default_joint_angle:
+      LF_HAA_joint: 0.0
+      LF_HFE_joint: 0.6
+      LF_KFE_joint: -1.5
+
+      RF_HAA_joint: 0.0
+      RF_HFE_joint: 0.6
+      RF_KFE_joint: -1.5
+
+      LH_HAA_joint: 0.0
+      LH_HFE_joint: 1.0
+      LH_KFE_joint: -1.5
+
+      RH_HAA_joint: 0.0
+      RH_HFE_joint: 1.0
+      RH_KFE_joint: -1.5
+
+  control:
+    # PD Drive parameters:
+    stiffness: 20.0
+    damping: 0.5
+    action_scale: 0.25
+    decimation: 20
+
+  normalization:
+    clip_scales:
+      clip_observations: 100.
+      clip_actions: 100.
+    obs_scales:
+      lin_vel: 2.0
+      ang_vel: 0.25
+      dof_pos: 1.0
+      dof_vel: 0.05
+      height_measurements: 5.0
+
+  size:
+    actions_size: 12
+    observations_size: 52
+
+module:
+  module_path: "/home/ubuntu/catkin_ws/src/legged_rl/legged_rl_controllers/policy/a1_trot_policy/policy_1.onnx"

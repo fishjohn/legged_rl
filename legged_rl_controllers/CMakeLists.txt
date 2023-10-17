@@ -88,6 +88,18 @@ target_link_libraries(amp_controller
         )
 set_property(TARGET amp_controller PROPERTY CXX_STANDARD 14)
 
+add_library(trot_controller
+        src/RLControllerBase.cpp
+        src/TrotController.cpp
+        )
+
+target_link_libraries(trot_controller
+        ${catkin_LIBRARIES}
+        ${pinocchio_LIBRARIES}
+        onnxruntime
+        )
+set_property(TARGET trot_controller PROPERTY CXX_STANDARD 14)
+
 #########################
 ###   CLANG TOOLING   ###
 #########################
@@ -130,5 +142,9 @@ install(
 )
 install(
         FILES amp_controller_plugins.xml
+        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+install(
+        FILES trot_controller_plugins.xml
         DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )

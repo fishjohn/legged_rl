@@ -1,0 +1,50 @@
+{
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "",
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/opt/ros/noetic/include/**",
+                "/opt/openrobots/include/**",
+                "~/catkin_ws/devel/include/**",
+                "~/catkin_ws/src/ocs2/ocs2_sqp/hpipm_catkin/include/**",
+                "~/catkin_ws/src/hpp-fcl/include/**",
+                "~/catkin_ws/src/legged_control/legged_common/include/**",
+                "~/catkin_ws/src/legged_control/legged_controllers/include/**",
+                "~/catkin_ws/src/legged_control/legged_estimation/include/**",
+                "~/catkin_ws/src/legged_control/legged_gazebo/include/**",
+                "~/catkin_ws/src/legged_control/legged_interface/include/**",
+                "~/catkin_ws/src/legged_control/legged_wbc/include/**",
+                "~/catkin_ws/src/ocs2/ocs2_pinocchio/ocs2_centroidal_model/include/**",
+                "~/catkin_ws/src/ocs2/ocs2_core/include/**",
+                "~/catkin_ws/src/ocs2/ocs2_ddp/include/**",
+                "~/catkin_ws/src/ocs2/ocs2_ipm/include/**",
+                "~/catkin_ws/src/ocs2/ocs2_robotic_examples/ocs2_legged_robot/include/**",
+                "~/catkin_ws/src/ocs2/ocs2_robotic_examples/ocs2_legged_robot_ros/include/**",
+                "~/catkin_ws/src/ocs2/ocs2_mpc/include/**",
+                "~/catkin_ws/src/ocs2/ocs2_oc/include/**",
+                "~/catkin_ws/src/ocs2/ocs2_pinocchio/ocs2_pinocchio_interface/include/**",
+                "~/catkin_ws/src/ocs2/ocs2_test_tools/ocs2_qp_solver/include/**",
+                "~/catkin_ws/src/ocs2_robotic_assets/include/**",
+                "~/catkin_ws/src/ocs2/ocs2_robotic_tools/include/**",
+                "~/catkin_ws/src/ocs2/ocs2_ros_interfaces/include/**",
+                "~/catkin_ws/src/ocs2/ocs2_pinocchio/ocs2_self_collision/include/**",
+                "~/catkin_ws/src/ocs2/ocs2_pinocchio/ocs2_self_collision_visualization/include/**",
+                "~/catkin_ws/src/ocs2/ocs2_sqp/ocs2_sqp/include/**",
+                "~/catkin_ws/src/ocs2/ocs2_thirdparty/include/**",
+                "/usr/include/**",
+                "~/.local/include/**"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++14",
+            "intelliSenseMode": "gcc-x64"
+        }
+    ],
+    "version": 4
+}
