@@ -11,11 +11,11 @@ LeggedRobotCfg:
       RF_KFE_joint: -1.5
 
       LH_HAA_joint: 0.0
-      LH_HFE_joint: 1.0
+      LH_HFE_joint: 0.8
       LH_KFE_joint: -1.5
 
       RH_HAA_joint: 0.0
-      RH_HFE_joint: 1.0
+      RH_HFE_joint: 0.8
       RH_KFE_joint: -1.5
 
   control:

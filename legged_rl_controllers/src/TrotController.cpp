@@ -158,14 +158,19 @@ void TrotController::computeObservation() {
   // dof position and dof velocity
   vector_t jointPos = rbdState_.segment(6, info.actuatedDofNum);
   vector_t jointVel = rbdState_.segment(6 + info.generalizedCoordinatesNum, info.actuatedDofNum);
+
   vector_t gait(5);
   gait << 2, 0.5, 0.5, 0, 0.5;
-  vector_t gait_clock(2);
-  gait_clock << sin(gait_index_ * 2 * M_PI), cos(gait_index_ * 2 * M_PI);
   gait_index_ += 0.02 * gait(0);
   if (gait_index_ > 1.0) {
     gait_index_ = 0.0;
   }
+  //   if (fabsf(command[0]) + fabsf(command[1]) + fabsf(command[2]) < 0.01) {
+  //     gait_index_ = 0.0;
+  //   }
+
+  vector_t gait_clock(2);
+  gait_clock << sin(gait_index_ * 2 * M_PI), cos(gait_index_ * 2 * M_PI);
 
   // actions
   vector_t actions(lastActions_);
