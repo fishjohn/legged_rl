@@ -3,8 +3,8 @@
 //
 
 #include "legged_rl_controllers/RLControllerBase.h"
-
 #include <pluginlib/class_list_macros.hpp>
+#include "legged_estimation/FromTopiceEstimate.h"
 
 namespace legged {
 bool RLControllerBase::init(hardware_interface::RobotHW* robotHw, ros::NodeHandle& controllerNH) {
@@ -125,6 +125,8 @@ void RLControllerBase::setupStateEstimate(const std::string& taskFile, bool verb
   stateEstimate_ = std::make_shared<KalmanFilterEstimate>(leggedInterface_->getPinocchioInterface(),
                                                           leggedInterface_->getCentroidalModelInfo(), *eeKinematicsPtr_);
   dynamic_cast<KalmanFilterEstimate&>(*stateEstimate_).loadSettings(taskFile, verbose);
+  //   stateEstimate_ = std::make_shared<FromTopicStateEstimate>(leggedInterface_->getPinocchioInterface(),
+  //                                                             leggedInterface_->getCentroidalModelInfo(), *eeKinematicsPtr_);
 }
 
 void RLControllerBase::updateStateEstimation(const ros::Time& time, const ros::Duration& period) {
