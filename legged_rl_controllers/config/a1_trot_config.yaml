@@ -3,20 +3,20 @@ LeggedRobotCfg:
     # target angles [rad] when action = 0.0
     default_joint_angle:
       LF_HAA_joint: 0.0
-      LF_HFE_joint: 0.6
-      LF_KFE_joint: -1.5
+      LF_HFE_joint: 0.72
+      LF_KFE_joint: -1.44
 
       RF_HAA_joint: 0.0
-      RF_HFE_joint: 0.6
-      RF_KFE_joint: -1.5
+      RF_HFE_joint: 0.72
+      RF_KFE_joint: -1.44
 
       LH_HAA_joint: 0.0
-      LH_HFE_joint: 0.8
-      LH_KFE_joint: -1.5
+      LH_HFE_joint: 0.72
+      LH_KFE_joint: -1.44
 
       RH_HAA_joint: 0.0
-      RH_HFE_joint: 0.8
-      RH_KFE_joint: -1.5
+      RH_HFE_joint: 0.72
+      RH_KFE_joint: -1.44
 
   control:
     # PD Drive parameters:
