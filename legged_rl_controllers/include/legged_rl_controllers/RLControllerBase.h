@@ -31,6 +31,7 @@ struct RLRobotCfg {
     float damping;
     float actionScale;
     int decimation;
+    float user_torque_limit;
   };
 
   struct InitState {

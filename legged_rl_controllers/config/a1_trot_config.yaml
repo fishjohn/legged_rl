@@ -23,7 +23,8 @@ LeggedRobotCfg:
     stiffness: 20.0
     damping: 0.5
     action_scale: 0.25
-    decimation: 20
+    decimation: 10
+    user_torque_limit: 40
 
   normalization:
     clip_scales:
@@ -38,7 +39,7 @@ LeggedRobotCfg:
 
   size:
     actions_size: 12
-    observations_size: 52
+    observations_size: 54
 
 module:
   module_path: "/home/ubuntu/catkin_ws/src/legged_rl/legged_rl_controllers/policy/a1_trot_policy/policy_1.onnx"

@@ -21,7 +21,19 @@ void TrotController::handleWalkMode() {
   }
 
   // set action
+  const auto& info = leggedInterface_->getCentroidalModelInfo();
+  vector_t jointPos = rbdState_.segment(6, info.actuatedDofNum);
+  vector_t jointVel = rbdState_.segment(6 + info.generalizedCoordinatesNum, info.actuatedDofNum);
   for (int i = 0; i < hybridJointHandles_.size(); i++) {
+    // scalar_t actionMin =
+    //     jointPos(i) - defaultJointAngles_(i, 0) +
+    //     (robotCfg_.controlCfg.damping * jointVel(i) - robotCfg_.controlCfg.user_torque_limit) / robotCfg_.controlCfg.stiffness;
+    // scalar_t actionMax =
+    //     jointPos(i) - defaultJointAngles_(i, 0) +
+    //     (robotCfg_.controlCfg.damping * jointVel(i) + robotCfg_.controlCfg.user_torque_limit) / robotCfg_.controlCfg.stiffness;
+    scalar_t actionMin = jointPos(i) - defaultJointAngles_(i, 0) - robotCfg_.controlCfg.user_torque_limit / robotCfg_.controlCfg.stiffness;
+    scalar_t actionMax = jointPos(i) - defaultJointAngles_(i, 0) + robotCfg_.controlCfg.user_torque_limit / robotCfg_.controlCfg.stiffness;
+    actions_[i] = std::max(actionMin, std::min(actionMax, (scalar_t)actions_[i]));
     scalar_t pos_des = actions_[i] * robotCfg_.controlCfg.actionScale + defaultJointAngles_(i, 0);
     hybridJointHandles_[i].setCommand(pos_des, 0, robotCfg_.controlCfg.stiffness, robotCfg_.controlCfg.damping, 0);
     lastActions_(i, 0) = actions_[i];
@@ -88,6 +100,7 @@ bool TrotController::loadRLCfg(ros::NodeHandle& nh) {
   error += static_cast<int>(!nh.getParam("/LeggedRobotCfg/control/damping", controlCfg.damping));
   error += static_cast<int>(!nh.getParam("/LeggedRobotCfg/control/action_scale", controlCfg.actionScale));
   error += static_cast<int>(!nh.getParam("/LeggedRobotCfg/control/decimation", controlCfg.decimation));
+  error += static_cast<int>(!nh.getParam("/LeggedRobotCfg/control/user_torque_limit", controlCfg.user_torque_limit));
 
   error += static_cast<int>(!nh.getParam("/LeggedRobotCfg/normalization/clip_scales/clip_observations", robotCfg_.clipObs));
   error += static_cast<int>(!nh.getParam("/LeggedRobotCfg/normalization/clip_scales/clip_actions", robotCfg_.clipActions));
@@ -159,8 +172,11 @@ void TrotController::computeObservation() {
   vector_t jointPos = rbdState_.segment(6, info.actuatedDofNum);
   vector_t jointVel = rbdState_.segment(6 + info.generalizedCoordinatesNum, info.actuatedDofNum);
 
-  vector_t gait(5);
-  gait << 2, 0.5, 0.5, 0, 0.5;
+  vector_t gait(7);
+  gait << 2.5, 0.5, 0.5, 0.0, 0.5, 0.08, 0.3;  // trot
+  //   gait << 2.5, 0.5, 0.25, 0.75, 0.75, 0.08, 0.3;  // walking
+  //   gait << 2.5, 0.5, 0.0, 0.5, 0.5, 0.08, 0.3;  // pacing
+  //   gait << 2.5, 0.0, 0.0, 0.0, 0.5, 0.08, 0.3;     // pronking
   gait_index_ += 0.02 * gait(0);
   if (gait_index_ > 1.0) {
     gait_index_ = 0.0;
@@ -185,23 +201,14 @@ void TrotController::computeObservation() {
   RLRobotCfg::ObsScales& obsScales = robotCfg_.obsScales;
   matrix_t commandScaler = Eigen::DiagonalMatrix<scalar_t, 3>(obsScales.linVel, obsScales.linVel, obsScales.angVel);
   vector_t obs(observationSize_);
-  // self.projected_gravity,
-  // self.base_ang_vel * self.obs_scales.ang_vel,
-  // (self.dof_pos - self.default_dof_pos) * self.obs_scales.dof_pos,
-  // self.dof_vel * self.obs_scales.dof_vel,
-  // self.commands[:, :3] * self.commands_scale,
-  // self.gaits,
-  // self.clock_inputs_sin.view(self.num_envs, 1),
-  // self.clock_inputs_cos.view(self.num_envs, 1),
-  // self.actions,
-  // clang-format off
-  obs << projectedGravity,
-      baseAngVel * obsScales.angVel,
-      (jointPos - defaultJointAngles_) * obsScales.dofPos,
-      jointVel * obsScales.dofVel,
-      commandScaler * command,
-      gait,
-      gait_clock,
+
+  obs << baseAngVel * obsScales.angVel,                     //
+      projectedGravity,                                     //
+      commandScaler * command,                              //
+      (jointPos - defaultJointAngles_) * obsScales.dofPos,  //
+      jointVel * obsScales.dofVel,                          //
+      gait,                                                 //
+      gait_clock,                                           //
       actions;
   // clang-format on
   //   printf("observation\n");
