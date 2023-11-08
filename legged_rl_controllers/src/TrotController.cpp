@@ -99,9 +99,6 @@ bool TrotController::loadModel(ros::NodeHandle& nh) {
     encoderInputShapes_.push_back(encoderSessionPtr_->GetInputTypeInfo(i).GetTensorTypeAndShapeInfo().GetShape());
     std::cerr << encoderSessionPtr_->GetInputName(i, allocator) << std::endl;
     std::vector<int64_t> shape = encoderSessionPtr_->GetInputTypeInfo(i).GetTensorTypeAndShapeInfo().GetShape();
-    encoderBatchSize_ = shape[0];
-    encoderSeqLength_ = shape[1];
-    encoderInputDim_ = shape[2];
     std::cerr << "Shape: [";
     for (size_t j = 0; j < shape.size(); ++j) {
       std::cout << shape[j];
@@ -170,6 +167,7 @@ bool TrotController::loadRLCfg(ros::NodeHandle& nh) {
   error += static_cast<int>(!nh.getParam("/LeggedRobotCfg/size/observations_size", observationSize_));
   error += static_cast<int>(!nh.getParam("/LeggedRobotCfg/size/obs_history_length", obsHistoryLength_));
   error += static_cast<int>(!nh.getParam("/LeggedRobotCfg/size/encoder_output_size", encoderOutputSize_));
+  encoderIntputSize_ = obsHistoryLength_ * observationSize_;
 
   actions_.resize(actionsSize_);
   observations_.resize(observationSize_);
@@ -274,11 +272,11 @@ void TrotController::computeObservation() {
   vector_t actions(lastActions_);
 
   // heights
-  int sampleCount = 187;
-  scalar_t measuredHeight = 0.0;
-  scalar_t baseHeight = rbdState_(5);
-  vector_t heights(sampleCount);
-  heights.fill(baseHeight - 0.5 - measuredHeight);
+  //  int sampleCount = 187;
+  //  scalar_t measuredHeight = 0.0;
+  //  scalar_t baseHeight = rbdState_(5);
+  //  vector_t heights(sampleCount);
+  //  heights.fill(baseHeight - 0.5 - measuredHeight);
 
   RLRobotCfg::ObsScales& obsScales = robotCfg_.obsScales;
   matrix_t commandScaler = Eigen::DiagonalMatrix<scalar_t, 3>(obsScales.linVel, obsScales.linVel, obsScales.angVel);
@@ -293,18 +291,21 @@ void TrotController::computeObservation() {
       gait_clock,                                           //
       actions;
 
+  std::cerr << "obs.size()" << obs.size() << std::endl;
+
   if (isfirstRecObs_) {
     int64_t inputSize =
         std::accumulate(encoderInputShapes_[0].begin(), encoderInputShapes_[0].end(), static_cast<int64_t>(1), std::multiplies<int64_t>());
+    std::cerr << "inputSize: " << inputSize << std::endl;
     proprioHistoryBuffer_.resize(inputSize);
-    for (size_t i = 0; i < encoderSeqLength_; i++) {
-      proprioHistoryBuffer_.segment(i * encoderInputDim_, encoderInputDim_) = obs.cast<tensor_element_t>();
+    for (size_t i = 0; i < obsHistoryLength_; i++) {
+      proprioHistoryBuffer_.segment(i * encoderIntputSize_, encoderIntputSize_) = obs.cast<tensor_element_t>();
     }
     isfirstRecObs_ = false;
   }
-  proprioHistoryBuffer_.head(proprioHistoryBuffer_.size() - encoderInputDim_) =
-      proprioHistoryBuffer_.tail(proprioHistoryBuffer_.size() - encoderInputDim_);
-  proprioHistoryBuffer_.tail(encoderInputDim_) = obs.cast<tensor_element_t>();
+  proprioHistoryBuffer_.head(proprioHistoryBuffer_.size() - encoderIntputSize_) =
+      proprioHistoryBuffer_.tail(proprioHistoryBuffer_.size() - encoderIntputSize_);
+  proprioHistoryBuffer_.tail(encoderIntputSize_) = obs.cast<tensor_element_t>();
 
   // clang-format on
   //   printf("observation\n");
@@ -315,6 +316,7 @@ void TrotController::computeObservation() {
   // Limit observation range
   scalar_t obsMin = -robotCfg_.clipObs;
   scalar_t obsMax = robotCfg_.clipObs;
+  std::cerr << "observations_.size()" << observations_.size() << std::endl;
   std::transform(observations_.begin(), observations_.end(), observations_.begin(),
                  [obsMin, obsMax](scalar_t x) { return std::max(obsMin, std::min(obsMax, x)); });
 }

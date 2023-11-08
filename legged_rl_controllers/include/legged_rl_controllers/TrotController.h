@@ -40,7 +40,6 @@ class TrotController : public RLControllerBase {
   std::vector<const char*> encoderOutputNames_;
   std::vector<std::vector<int64_t>> encoderInputShapes_;
   std::vector<std::vector<int64_t>> encoderOutputShapes_;
-  int64_t encoderBatchSize_, encoderSeqLength_, encoderInputDim_;
 
   vector3_t baseLinVel_;
   vector3_t basePosition_;
@@ -51,7 +50,7 @@ class TrotController : public RLControllerBase {
   int actionsSize_;
   int observationSize_;
   int obsHistoryLength_;
-  int encoderOutputSize_;
+  int encoderIntputSize_, encoderOutputSize_;
   double gait_index_;
   std::vector<tensor_element_t> actions_;
   std::vector<tensor_element_t> observations_;
