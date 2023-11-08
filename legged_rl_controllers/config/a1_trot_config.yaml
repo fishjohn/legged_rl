@@ -40,6 +40,8 @@ LeggedRobotCfg:
   size:
     actions_size: 12
     observations_size: 54
+    obs_history_length: 5
+    encoder_output_size: 3
 
 module:
   module_path: "/home/ubuntu/catkin_ws/src/legged_rl/legged_rl_controllers/policy/a1_trot_policy/policy_1.onnx"

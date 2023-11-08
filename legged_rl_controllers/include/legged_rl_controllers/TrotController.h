@@ -21,29 +21,42 @@ class TrotController : public RLControllerBase {
   bool loadModel(ros::NodeHandle& nh) override;
   bool loadRLCfg(ros::NodeHandle& nh) override;
   void computeActions() override;
+  void computeEncoder();
   void computeObservation() override;
   void handleWalkMode() override;
 
  private:
   // onnx policy model
-  std::string policyFilePath_;
+  std::string policyModelPath_;
+  std::string encoderModelPath_;
   std::shared_ptr<Ort::Env> onnxEnvPrt_;
-  std::unique_ptr<Ort::Session> sessionPtr_;
-  std::vector<const char*> inputNames_;
-  std::vector<const char*> outputNames_;
-  std::vector<std::vector<int64_t>> inputShapes_;
-  std::vector<std::vector<int64_t>> outputShapes_;
+  std::unique_ptr<Ort::Session> policySessionPtr_;
+  std::unique_ptr<Ort::Session> encoderSessionPtr_;
+  std::vector<const char*> policyInputNames_;
+  std::vector<const char*> policyOutputNames_;
+  std::vector<std::vector<int64_t>> policyInputShapes_;
+  std::vector<std::vector<int64_t>> policyOutputShapes_;
+  std::vector<const char*> encoderInputNames_;
+  std::vector<const char*> encoderOutputNames_;
+  std::vector<std::vector<int64_t>> encoderInputShapes_;
+  std::vector<std::vector<int64_t>> encoderOutputShapes_;
+  int64_t encoderBatchSize_, encoderSeqLength_, encoderInputDim_;
 
   vector3_t baseLinVel_;
   vector3_t basePosition_;
   vector_t lastActions_;
   vector_t defaultJointAngles_;
 
+  bool isfirstRecObs_{true};
   int actionsSize_;
   int observationSize_;
+  int obsHistoryLength_;
+  int encoderOutputSize_;
   double gait_index_;
   std::vector<tensor_element_t> actions_;
   std::vector<tensor_element_t> observations_;
+  std::vector<tensor_element_t> encoderOut_;
+  Eigen::Matrix<tensor_element_t, Eigen::Dynamic, 1> proprioHistoryBuffer_;
 };
 
 }  // namespace legged
