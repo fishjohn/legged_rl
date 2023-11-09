@@ -1,0 +1,9 @@
+<library path="lib/libparkour_controller">
+
+    <class name="legged/ParkourController" type="legged::ParkourController"
+           base_class_type="controller_interface::ControllerBase">
+        <description>
+            The Parkour controller.
+        </description>
+    </class>
+</library>

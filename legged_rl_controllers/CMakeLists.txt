@@ -88,6 +88,18 @@ target_link_libraries(amp_controller
         )
 set_property(TARGET amp_controller PROPERTY CXX_STANDARD 14)
 
+add_library(parkour_controller
+        src/RLControllerBase.cpp
+        src/ParkourController.cpp
+        )
+
+target_link_libraries(parkour_controller
+        ${catkin_LIBRARIES}
+        ${pinocchio_LIBRARIES}
+        onnxruntime
+        )
+set_property(TARGET parkour_controller PROPERTY CXX_STANDARD 14)
+
 add_library(trot_controller
         src/RLControllerBase.cpp
         src/TrotController.cpp
@@ -142,6 +154,10 @@ install(
 )
 install(
         FILES amp_controller_plugins.xml
+        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+install(
+        FILES parkour_controller_plugins.xml
         DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 install(

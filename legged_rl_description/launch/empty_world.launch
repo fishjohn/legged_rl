@@ -1,14 +1,16 @@
 <launch>
     <arg name="robot_type" default="$(env ROBOT_TYPE)" doc="Robot type: [a1, aliengo, lite3]"/>
-    <rosparam file="$(find legged_gazebo)/config/default.yaml" command="load"/>
 
     <param name="legged_robot_description" command="cat $(find legged_rl_description)/urdf/$(arg robot_type).urdf"/>
 
-    <node name="generate_urdf" pkg="legged_common" type="generate_urdf.sh" output="screen"
-          args="$(find legged_unitree_description)/urdf/$(arg robot_type).urdf "/>
+    <!--    <node name="generate_urdf" pkg="legged_common" type="generate_urdf.sh" output="screen"-->
+    <!--          args="$(find legged_unitree_description)/urdf/$(arg robot_type).urdf "/>-->
 
+    <rosparam file="$(find legged_gazebo)/config/default.yaml" command="load"/>
     <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
-    <include file="$(find gazebo_ros)/launch/empty_world.launch"/>
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find legged_rl_description)/worlds/empty_world.world"/>
+    </include>
 
     <!-- push robot_description to factory and spawn robot in gazebo -->
     <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" clear_params="true"
