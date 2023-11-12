@@ -18,6 +18,7 @@ find_package(catkin REQUIRED
 
 find_package(onnxruntime REQUIRED)
 find_package(PkgConfig REQUIRED)
+find_package(OpenCV REQUIRED)
 pkg_check_modules(pinocchio REQUIRED pinocchio)
 
 catkin_package(
@@ -36,6 +37,8 @@ catkin_package(
         angles
         DEPENDS
         onnxruntime
+        DEPENDS
+        OpenCV
 )
 
 ###########
@@ -96,6 +99,7 @@ add_library(parkour_controller
 target_link_libraries(parkour_controller
         ${catkin_LIBRARIES}
         ${pinocchio_LIBRARIES}
+        ${OpenCV_LIBRARIES}
         onnxruntime
         )
 set_property(TARGET parkour_controller PROPERTY CXX_STANDARD 14)
