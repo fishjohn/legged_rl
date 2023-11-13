@@ -6,7 +6,7 @@
     <arg name="cheater" default="false"/>
 
     <!-- make the files into global parameters -->
-    <param name="urdfFile" value="$(find legged_rl_description)/urdf/$(arg robot_type).urdf"/>
+    <param name="urdfFile" value="/tmp/legged_control/$(arg robot_type).urdf"/>
     <param name="taskFile" value="$(find legged_controllers)/config/$(arg robot_type)/task.info"/>
     <param name="referenceFile" value="$(find legged_controllers)/config/$(arg robot_type)/reference.info"/>
     <param name="gaitCommandFile" value="$(find legged_controllers)/config/$(arg robot_type)/gait.info"/>

@@ -294,6 +294,8 @@ void ParkourController::computeDepthLatent() {
   for (size_t i = 0; i < proprioObservationSize_; i++) {
     combinedImageProprio_[numPixels_ + i] = observations_[i];
   }
+  combinedImageProprio_[numPixels_ + 6] = 0;
+  combinedImageProprio_[numPixels_ + 7] = 0;
 
   Ort::MemoryInfo memoryInfo = Ort::MemoryInfo::CreateCpu(OrtAllocatorType::OrtArenaAllocator, OrtMemType::OrtMemTypeDefault);
   std::vector<Ort::Value> inputValues;
