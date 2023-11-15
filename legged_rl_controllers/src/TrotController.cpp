@@ -50,7 +50,9 @@ bool TrotController::loadModel(ros::NodeHandle& nh) {
 
   std::string policyModelPath;
   std::string encoderModelPath;
-  if (!nh.getParam("/policyModelPath", policyModelPath) || !nh.getParam("/encoderModelPath", encoderModelPath)) {
+  std::string terrainEncoderModelPath;
+  if (!nh.getParam("/policyModelPath", policyModelPath) || !nh.getParam("/encoderModelPath", encoderModelPath) ||
+      !nh.getParam("/terrainEncoderModelPath", terrainEncoderModelPath)) {
     ROS_ERROR_STREAM("Get policy path fail from param server, some error occur!");
     return false;
   }
@@ -132,6 +134,41 @@ bool TrotController::loadModel(ros::NodeHandle& nh) {
     }
     std::cout << "]" << std::endl;
   }
+
+  // terrain encoder session
+  terrainEncoderSessionPtr_ = std::make_unique<Ort::Session>(*onnxEnvPrt_, terrainEncoderModelPath.c_str(), sessionOptions);
+  terrainEncoderInputNames_.clear();
+  terrainEncoderOutputNames_.clear();
+  terrainEncoderInputShapes_.clear();
+  terrainEncoderOutputShapes_.clear();
+  for (int i = 0; i < terrainEncoderSessionPtr_->GetInputCount(); i++) {
+    terrainEncoderInputNames_.push_back(terrainEncoderSessionPtr_->GetInputName(i, allocator));
+    terrainEncoderInputShapes_.push_back(terrainEncoderSessionPtr_->GetInputTypeInfo(i).GetTensorTypeAndShapeInfo().GetShape());
+    std::cerr << terrainEncoderSessionPtr_->GetInputName(i, allocator) << std::endl;
+    std::vector<int64_t> shape = terrainEncoderSessionPtr_->GetInputTypeInfo(i).GetTensorTypeAndShapeInfo().GetShape();
+    std::cerr << "Shape: [";
+    for (size_t j = 0; j < shape.size(); ++j) {
+      std::cout << shape[j];
+      if (j != shape.size() - 1) {
+        std::cerr << ", ";
+      }
+    }
+    std::cout << "]" << std::endl;
+  }
+  for (int i = 0; i < terrainEncoderSessionPtr_->GetOutputCount(); i++) {
+    terrainEncoderOutputNames_.push_back(terrainEncoderSessionPtr_->GetOutputName(i, allocator));
+    std::cerr << terrainEncoderSessionPtr_->GetOutputName(i, allocator) << std::endl;
+    terrainEncoderOutputShapes_.push_back(terrainEncoderSessionPtr_->GetOutputTypeInfo(i).GetTensorTypeAndShapeInfo().GetShape());
+    std::vector<int64_t> shape = terrainEncoderSessionPtr_->GetOutputTypeInfo(i).GetTensorTypeAndShapeInfo().GetShape();
+    std::cerr << "Shape: [";
+    for (size_t j = 0; j < shape.size(); ++j) {
+      std::cout << shape[j];
+      if (j != shape.size() - 1) {
+        std::cerr << ", ";
+      }
+    }
+    std::cout << "]" << std::endl;
+  }
   ROS_INFO_STREAM("Load Onnx model successfully !!!");
   return true;
 }
@@ -175,13 +212,17 @@ bool TrotController::loadRLCfg(ros::NodeHandle& nh) {
 
   error += static_cast<int>(!nh.getParam("/LeggedRobotCfg/size/actions_size", actionsSize_));
   error += static_cast<int>(!nh.getParam("/LeggedRobotCfg/size/observations_size", observationSize_));
+  error += static_cast<int>(!nh.getParam("/LeggedRobotCfg/size/commands_size", commandsSize_));
   error += static_cast<int>(!nh.getParam("/LeggedRobotCfg/size/obs_history_length", obsHistoryLength_));
   error += static_cast<int>(!nh.getParam("/LeggedRobotCfg/size/encoder_output_size", encoderOutputSize_));
+  error += static_cast<int>(!nh.getParam("/LeggedRobotCfg/size/terrain_encoder_output_size", terrainEncoderOutputSize_));
   encoderIntputSize_ = obsHistoryLength_ * observationSize_;
 
   actions_.resize(actionsSize_);
   observations_.resize(observationSize_);
+  commands_.resize(commandsSize_);
   encoderOut_.resize(encoderOutputSize_);
+  terrainEncoderOut_.resize(terrainEncoderOutputSize_);
 
   command_.setZero();
   baseLinVel_.setZero();
@@ -205,10 +246,16 @@ void TrotController::computeActions() {
   Ort::MemoryInfo memoryInfo = Ort::MemoryInfo::CreateCpu(OrtAllocatorType::OrtArenaAllocator, OrtMemType::OrtMemTypeDefault);
   std::vector<Ort::Value> inputValues;
   std::vector<tensor_element_t> combined_obs;
+  for (const auto& item : encoderOut_) {
+    combined_obs.push_back(item);
+  }
   for (const auto& item : observations_) {
     combined_obs.push_back(item);
   }
-  for (const auto& item : encoderOut_) {
+  for (const auto& item : commands_) {
+    combined_obs.push_back(item);
+  }
+  for (const auto& item : terrainEncoderOut_) {
     combined_obs.push_back(item);
   }
   inputValues.push_back(Ort::Value::CreateTensor<tensor_element_t>(memoryInfo, combined_obs.data(), combined_obs.size(),
@@ -234,6 +281,19 @@ void TrotController::computeEncoder() {
 
   for (int i = 0; i < encoderOutputSize_; i++) {
     encoderOut_[i] = *(outputValues[0].GetTensorMutableData<tensor_element_t>() + i);
+  }
+
+  Ort::MemoryInfo terrainMemoryInfo = Ort::MemoryInfo::CreateCpu(OrtAllocatorType::OrtArenaAllocator, OrtMemType::OrtMemTypeDefault);
+  std::vector<Ort::Value> terrainInputValues;
+  terrainInputValues.push_back(
+      Ort::Value::CreateTensor<tensor_element_t>(terrainMemoryInfo, proprioHistoryBuffer_.data(), proprioHistoryBuffer_.size(),
+                                                 terrainEncoderInputShapes_[0].data(), terrainEncoderInputShapes_[0].size()));
+  Ort::RunOptions terrainRunOptions;
+  std::vector<Ort::Value> terrainOutputValues = terrainEncoderSessionPtr_->Run(
+      terrainRunOptions, terrainEncoderInputNames_.data(), terrainInputValues.data(), 1, terrainEncoderOutputNames_.data(), 1);
+
+  for (int i = 0; i < terrainEncoderOutputSize_; i++) {
+    terrainEncoderOut_[i] = *(terrainOutputValues[0].GetTensorMutableData<tensor_element_t>() + i);
   }
 }
 
@@ -292,12 +352,14 @@ void TrotController::computeObservation() {
 
   obs << baseAngVel * obsScales.angVel,                     //
       projectedGravity,                                     //
-      commandScaler * command,                              //
+                                                            //   commandScaler * command,                              //
       (jointPos - defaultJointAngles_) * obsScales.dofPos,  //
       jointVel * obsScales.dofVel,                          //
-      gait,                                                 //
-      gait_clock,                                           //
+                                                            //   gait,                                                 //
+                                                            //   gait_clock,                                           //
       actions;
+
+  command *= commandScaler;
 
   if (isfirstRecObs_) {
     int64_t inputSize =
@@ -316,6 +378,10 @@ void TrotController::computeObservation() {
   //   printf("observation\n");
   for (size_t i = 0; i < obs.size(); i++) {
     observations_[i] = static_cast<tensor_element_t>(obs(i));
+    // std::cout << observations_[i] << std::endl;
+  }
+  for (size_t i = 0; i < command.size(); i++) {
+    commands_[i] = static_cast<tensor_element_t>(command(i));
     // std::cout << observations_[i] << std::endl;
   }
   // Limit observation range
