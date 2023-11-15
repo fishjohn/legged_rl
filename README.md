@@ -36,7 +36,7 @@ git clone git@github.com:qiayuanliao/legged_control.git
 
 ```
 # Clone legged_rl
-git clone git@github.com:fishjohn/legged_rl.git
+git clone git@github.com:clearlab-sustech/legged_rl.git
 # Build legged_rl
 catkin config -DCMAKE_BUILD_TYPE=RelWithDebInfo
 catkin build legged_gazebo legged_unitree_description legged_rl_controllers legged_rl_description 
@@ -49,13 +49,13 @@ catkin build legged_gazebo legged_unitree_description legged_rl_controllers legg
 ### Terminal 1
 
 ```
-roslaunch legged_unitree_description empty_world.launch
+roslaunch legged_rl_description empty_world.launch
 ```
 
 ### Terminal 2
 
 ```
-roslaunch legged_rl_controllers load_student_policy_controller.launch
+roslaunch legged_rl_controllers load_trot_controller.launch
 ```
 
 ```
