@@ -29,5 +29,6 @@
         <controller_interface plugin="${prefix}/amp_controller_plugins.xml"/>
         <controller_interface plugin="${prefix}/parkour_controller_plugins.xml"/>
         <controller_interface plugin="${prefix}/trot_controller_plugins.xml"/>
+        <controller_interface plugin="${prefix}/biped_controller_plugins.xml"/>
     </export>
 </package>

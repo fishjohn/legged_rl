@@ -116,6 +116,18 @@ target_link_libraries(trot_controller
         )
 set_property(TARGET trot_controller PROPERTY CXX_STANDARD 14)
 
+add_library(biped_controller
+        src/BipedController.cpp
+        )
+
+target_link_libraries(biped_controller
+        ${catkin_LIBRARIES}
+        ${pinocchio_LIBRARIES}
+        onnxruntime
+        )
+set_property(TARGET biped_controller PROPERTY CXX_STANDARD 14)
+
+
 #########################
 ###   CLANG TOOLING   ###
 #########################
@@ -166,5 +178,9 @@ install(
 )
 install(
         FILES trot_controller_plugins.xml
+        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+install(
+        FILES biped_controller_plugins.xml
         DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )

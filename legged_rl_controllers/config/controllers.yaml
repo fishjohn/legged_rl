@@ -12,3 +12,5 @@ controllers:
     type: legged/ParkourController
   trot_controller:
     type: legged/TrotController
+  biped_controller:
+    type: legged/BipedController
