@@ -1,0 +1,9 @@
+<library path="lib/libbiped_vision_controller">
+
+    <class name="legged/BipedVisionController" type="legged::BipedVisionController"
+           base_class_type="controller_interface::ControllerBase">
+        <description>
+            The biped vision controller.
+        </description>
+    </class>
+</library>

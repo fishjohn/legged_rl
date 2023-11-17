@@ -4,7 +4,7 @@
 
 #include "legged_rl_controllers/BipedController.h"
 
-#include "ocs2_robotic_tools/common/RotationTransforms.h"
+#include <ocs2_robotic_tools/common/RotationTransforms.h>
 
 #include <pluginlib/class_list_macros.hpp>
 

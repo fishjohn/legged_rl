@@ -128,6 +128,20 @@ target_link_libraries(biped_controller
 set_property(TARGET biped_controller PROPERTY CXX_STANDARD 14)
 
 
+add_library(biped_vision_controller
+        src/BipedController.cpp
+        src/BipedVisionController.cpp
+        )
+
+target_link_libraries(biped_vision_controller
+        ${catkin_LIBRARIES}
+        ${pinocchio_LIBRARIES}
+        ${OpenCV_LIBRARIES}
+        onnxruntime
+        )
+set_property(TARGET biped_vision_controller PROPERTY CXX_STANDARD 14)
+
+
 #########################
 ###   CLANG TOOLING   ###
 #########################
@@ -182,5 +196,9 @@ install(
 )
 install(
         FILES biped_controller_plugins.xml
+        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+install(
+        FILES biped_vision_controller_plugins.xml
         DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )

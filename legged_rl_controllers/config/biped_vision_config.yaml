@@ -1,0 +1,44 @@
+LeggedRobotCfg:
+  init_state:
+    # target angles [rad] when action = 0.0
+    default_joint_angle:
+      L_HAA_joint: 0.0
+      L_HFE_joint: 0.0
+      L_KFE_joint: 0.0
+
+      R_HAA_joint: 0.0
+      R_HFE_joint: 0.0
+      R_KFE_joint: 0.0
+
+  control:
+    # PD Drive parameters:
+    stiffness: 20.0
+    damping: 0.5
+    action_scale: 0.5
+    decimation: 10
+
+  normalization:
+    clip_scales:
+      clip_observations: 100.
+      clip_actions: 100.
+    obs_scales:
+      lin_vel: 2.0
+      ang_vel: 0.25
+      dof_pos: 1.0
+      dof_vel: 0.05
+      height_measurements: 5.0
+
+  depth_image:
+    original: [ 106, 60 ]
+    resized: [ 87, 58 ]
+    near_clip: 0.0
+    far_clip: 2.0
+    horizontal_fov: 87
+    buffer_len: 2
+
+  size:
+    actions_size: 6
+    observations_size: 510
+    depth_latent_size: 32
+    proprio_observation_size: 29
+    proprio_history_len: 10

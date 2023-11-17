@@ -684,4 +684,213 @@
             <mechanicalReduction>1</mechanicalReduction>
         </actuator>
     </transmission>
+    <material name="d435F_aluminum">
+        <color rgba="0.5 0.5 0.5 1"/>
+    </material>
+    <!-- camera body, with origin at bottom screw mount -->
+    <joint name="d435F_joint" type="fixed">
+        <origin rpy="0 0.69813 0" xyz="0.10 0 -0.10"/>
+        <parent link="base"/>
+        <child link="d435F_bottom_screw_frame"/>
+    </joint>
+    <link name="d435F_bottom_screw_frame"/>
+    <joint name="d435F_link_joint" type="fixed">
+        <origin rpy="0 0 0" xyz="0 0.0175 0.0125"/>
+        <parent link="d435F_bottom_screw_frame"/>
+        <child link="d435F_link"/>
+    </joint>
+    <link name="d435F_link">
+        <visual>
+            <origin rpy="1.5707963267948966 0 1.5707963267948966" xyz="0.0149 -0.0175 0"/>
+            <geometry>
+                <!-- <box size="${d435_cam_width} ${d435_cam_height} ${d435_cam_depth}"/> -->
+                <mesh filename="package://realsense2_description/meshes/d435.dae"/>
+                <!--<mesh filename="package://realsense2_description/meshes/d435/d435.dae" />-->
+            </geometry>
+            <material name="d435F_aluminum"/>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 -0.0175 0"/>
+            <geometry>
+                <box size="0.02505 0.09 0.025"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <!-- The following are not reliable values, and should not be used for modeling -->
+            <mass value="0.072"/>
+            <origin xyz="0 0 0"/>
+            <inertia ixx="0.003881243" ixy="0.0" ixz="0.0" iyy="0.000498940" iyz="0.0" izz="0.003879257"/>
+        </inertial>
+    </link>
+    <!-- camera depth joints and links -->
+    <joint name="d435F_depth_joint" type="fixed">
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <parent link="d435F_link"/>
+        <child link="d435F_depth_frame"/>
+    </joint>
+    <link name="d435F_depth_frame"/>
+    <joint name="d435F_depth_optical_joint" type="fixed">
+        <origin rpy="-1.5707963267948966 0 -1.5707963267948966" xyz="0 0 0"/>
+        <parent link="d435F_depth_frame"/>
+        <child link="d435F_depth_optical_frame"/>
+    </joint>
+    <link name="d435F_depth_optical_frame"/>
+    <!-- camera left IR joints and links -->
+    <joint name="d435F_left_ir_joint" type="fixed">
+        <origin rpy="0 0 0" xyz="0 0.0 0"/>
+        <parent link="d435F_depth_frame"/>
+        <child link="d435F_left_ir_frame"/>
+    </joint>
+    <link name="d435F_left_ir_frame"/>
+    <joint name="d435F_left_ir_optical_joint" type="fixed">
+        <origin rpy="-1.5707963267948966 0 -1.5707963267948966" xyz="0 0 0"/>
+        <parent link="d435F_left_ir_frame"/>
+        <child link="d435F_left_ir_optical_frame"/>
+    </joint>
+    <link name="d435F_left_ir_optical_frame"/>
+    <!-- camera right IR joints and links -->
+    <joint name="d435F_right_ir_joint" type="fixed">
+        <origin rpy="0 0 0" xyz="0 -0.05 0"/>
+        <parent link="d435F_depth_frame"/>
+        <child link="d435F_right_ir_frame"/>
+    </joint>
+    <link name="d435F_right_ir_frame"/>
+    <joint name="d435F_right_ir_optical_joint" type="fixed">
+        <origin rpy="-1.5707963267948966 0 -1.5707963267948966" xyz="0 0 0"/>
+        <parent link="d435F_right_ir_frame"/>
+        <child link="d435F_right_ir_optical_frame"/>
+    </joint>
+    <link name="d435F_right_ir_optical_frame"/>
+    <!-- camera color joints and links -->
+    <joint name="d435F_color_joint" type="fixed">
+        <origin rpy="0 0 0" xyz="0 0.015 0"/>
+        <parent link="d435F_depth_frame"/>
+        <child link="d435F_color_frame"/>
+    </joint>
+    <link name="d435F_color_frame"/>
+    <joint name="d435F_color_optical_joint" type="fixed">
+        <origin rpy="-1.5707963267948966 0 -1.5707963267948966" xyz="0 0 0"/>
+        <parent link="d435F_color_frame"/>
+        <child link="d435F_color_optical_frame"/>
+    </joint>
+    <link name="d435F_color_optical_frame"/>
+    <gazebo reference="d435F_link">
+        <self_collide>0</self_collide>
+        <enable_wind>0</enable_wind>
+        <kinematic>0</kinematic>
+        <gravity>1</gravity>
+        <!--<mu>1</mu>-->
+        <mu2>1</mu2>
+        <fdir1>0 0 0</fdir1>
+        <!--<slip1>0</slip1>
+                <slip2>0</slip2>-->
+        <kp>1e+13</kp>
+        <kd>1</kd>
+        <!--<max_vel>0.01</max_vel>
+                <min_depth>0</min_depth>-->
+        <sensor name="d435Fcolor" type="camera">
+            <camera name="d435F">
+                <horizontal_fov>1.2112585008840648</horizontal_fov>
+                <image>
+                    <width>640</width>
+                    <height>480</height>
+                    <format>RGB_INT8</format>
+                </image>
+                <clip>
+                    <near>0.1</near>
+                    <far>100</far>
+                </clip>
+                <noise>
+                    <type>gaussian</type>
+                    <mean>0.0</mean>
+                    <stddev>0.007</stddev>
+                </noise>
+            </camera>
+            <always_on>0</always_on>
+            <update_rate>30</update_rate>
+            <visualize>0</visualize>
+        </sensor>
+        <sensor name="d435Fired1" type="camera">
+            <camera name="d435F">
+                <horizontal_fov>1.4870205226991688</horizontal_fov>
+                <image>
+                    <width>1280</width>
+                    <height>720</height>
+                    <format>L_INT8</format>
+                </image>
+                <clip>
+                    <near>0.1</near>
+                    <far>100</far>
+                </clip>
+                <noise>
+                    <type>gaussian</type>
+                    <mean>0.0</mean>
+                    <stddev>0.05</stddev>
+                </noise>
+            </camera>
+            <always_on>0</always_on>
+            <update_rate>90</update_rate>
+            <visualize>0</visualize>
+        </sensor>
+        <sensor name="d435Fired2" type="camera">
+            <camera name="d435F">
+                <horizontal_fov>1.4870205226991688</horizontal_fov>
+                <image>
+                    <width>1280</width>
+                    <height>720</height>
+                    <format>L_INT8</format>
+                </image>
+                <clip>
+                    <near>0.1</near>
+                    <far>100</far>
+                </clip>
+                <noise>
+                    <type>gaussian</type>
+                    <mean>0.0</mean>
+                    <stddev>0.05</stddev>
+                </noise>
+            </camera>
+            <always_on>0</always_on>
+            <update_rate>90</update_rate>
+            <visualize>0</visualize>
+        </sensor>
+        <sensor name="d435Fdepth" type="depth">
+            <camera name="d435F">
+                <horizontal_fov>1.4870205226991688</horizontal_fov>
+                <image>
+                    <width>424</width>
+                    <height>240</height>
+                </image>
+                <clip>
+                    <near>0.1</near>
+                    <far>5</far>
+                </clip>
+                <noise>
+                    <type>gaussian</type>
+                    <mean>0.0</mean>
+                    <stddev>0.100</stddev>
+                </noise>
+            </camera>
+            <always_on>1</always_on>
+            <update_rate>10</update_rate>
+            <visualize>0</visualize>
+        </sensor>
+    </gazebo>
+    <gazebo>
+        <plugin filename="librealsense_gazebo_plugin.so" name="d435F">
+            <prefix>d435F</prefix>
+            <depthTopicName>aligned_depth_to_color/image_raw</depthTopicName>
+            <depthCameraInfoTopicName>depth/camera_info</depthCameraInfoTopicName>
+            <colorTopicName>color/image_raw</colorTopicName>
+            <colorCameraInfoTopicName>color/camera_info</colorCameraInfoTopicName>
+            <colorOpticalframeName>d435F_color_optical_frame</colorOpticalframeName>
+            <depthOpticalframeName>d435F_depth_optical_frame</depthOpticalframeName>
+            <rangeMinDepth>0.2</rangeMinDepth>
+            <rangeMaxDepth>5.0</rangeMaxDepth>
+            <pointCloud>True</pointCloud>
+            <pointCloudTopicName>depth/color/points</pointCloudTopicName>
+            <pointCloudCutoff>0.2</pointCloudCutoff>
+            <pointCloudCutoffMax>5.0</pointCloudCutoffMax>
+        </plugin>
+    </gazebo>
 </robot>

@@ -67,15 +67,20 @@ class BipedController : public controller_interface::MultiInterfaceController<Hy
   virtual void starting(const ros::Time& time);
   virtual void update(const ros::Time& time, const ros::Duration& period);
 
-  bool loadModel(ros::NodeHandle& nh);
-  bool loadRLCfg(ros::NodeHandle& nh);
-  void computeActions();
-  void computeObservation();
+  virtual bool loadModel(ros::NodeHandle& nh);
+  virtual bool loadRLCfg(ros::NodeHandle& nh);
+  virtual void computeActions();
+  virtual void computeObservation();
 
  protected:
   int64_t loopCount_;
   vector3_t command_;
   RLRobotCfg robotCfg_{};
+
+  vector3_t baseLinVel_;
+  vector3_t basePosition_;
+  vector_t lastActions_;
+  vector_t defaultJointAngles_;
 
   // hardware interface
   std::vector<HybridJointHandle> hybridJointHandles_;
@@ -94,11 +99,6 @@ class BipedController : public controller_interface::MultiInterfaceController<Hy
   std::vector<const char*> outputNames_;
   std::vector<std::vector<int64_t>> inputShapes_;
   std::vector<std::vector<int64_t>> outputShapes_;
-
-  vector3_t baseLinVel_;
-  vector3_t basePosition_;
-  vector_t lastActions_;
-  vector_t defaultJointAngles_;
 
   int actionsSize_;
   int observationSize_;
