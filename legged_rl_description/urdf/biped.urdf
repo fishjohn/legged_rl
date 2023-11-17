@@ -119,20 +119,6 @@
     <gazebo reference="unitree_imu_joint">
         <disableFixedJointLumping>true</disableFixedJointLumping>
     </gazebo>
-    <link name="camera_box">
-        <visual>
-            <origin rpy="0 0.69813 0" xyz="0.10 0 -0.10"/>
-            <geometry>
-                <box size="0.025 0.09 0.025"/>
-            </geometry>
-            <material name="red"/>
-        </visual>
-    </link>
-    <joint name="fixed_camera_box" type="fixed">
-        <origin rpy="0 0 0" xyz="0 0 0"/>
-        <parent link="base"/>
-        <child link="camera_box"/>
-    </joint>
     <link
             name="abad_L_Link">
         <inertial>
