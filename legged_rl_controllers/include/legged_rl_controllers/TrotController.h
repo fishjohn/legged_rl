@@ -27,11 +27,10 @@ class TrotController : public RLControllerBase {
 
  private:
   // onnx policy model
-  std::string policyModelPath_;
-  std::string encoderModelPath_;
   std::shared_ptr<Ort::Env> onnxEnvPrt_;
   std::unique_ptr<Ort::Session> policySessionPtr_;
   std::unique_ptr<Ort::Session> encoderSessionPtr_;
+  std::unique_ptr<Ort::Session> terrainEncoderSessionPtr_;
   std::vector<const char*> policyInputNames_;
   std::vector<const char*> policyOutputNames_;
   std::vector<std::vector<int64_t>> policyInputShapes_;
@@ -40,6 +39,10 @@ class TrotController : public RLControllerBase {
   std::vector<const char*> encoderOutputNames_;
   std::vector<std::vector<int64_t>> encoderInputShapes_;
   std::vector<std::vector<int64_t>> encoderOutputShapes_;
+  std::vector<const char*> terrainEncoderInputNames_;
+  std::vector<const char*> terrainEncoderOutputNames_;
+  std::vector<std::vector<int64_t>> terrainEncoderInputShapes_;
+  std::vector<std::vector<int64_t>> terrainEncoderOutputShapes_;
 
   vector3_t baseLinVel_;
   vector3_t basePosition_;
@@ -48,13 +51,13 @@ class TrotController : public RLControllerBase {
 
   bool isfirstRecObs_{true};
   int actionsSize_;
-  int observationSize_;
+  int observationSize_, commandsSize_;
   int obsHistoryLength_;
-  int encoderIntputSize_, encoderOutputSize_;
+  int encoderIntputSize_, encoderOutputSize_, terrainEncoderIntputSize_, terrainEncoderOutputSize_;
   double gait_index_;
   std::vector<tensor_element_t> actions_;
-  std::vector<tensor_element_t> observations_;
-  std::vector<tensor_element_t> encoderOut_;
+  std::vector<tensor_element_t> observations_, commands_;
+  std::vector<tensor_element_t> encoderOut_, terrainEncoderOut_;
   Eigen::Matrix<tensor_element_t, Eigen::Dynamic, 1> proprioHistoryBuffer_;
 };
 
