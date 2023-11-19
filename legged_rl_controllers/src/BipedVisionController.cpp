@@ -93,7 +93,7 @@ void BipedVisionController::computeObservation() {
   }
 
   // heights
-  int sampleCount = 165;
+  int sampleCount = 121;
   scalar_t measuredHeight = 0.0;
   scalar_t baseHeight = 0.5;
   vector_t heights(sampleCount);
