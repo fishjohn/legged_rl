@@ -102,6 +102,7 @@ class BipedController : public controller_interface::MultiInterfaceController<Hy
 
   int actionsSize_;
   int observationSize_;
+  double gait_index_;
   std::vector<tensor_element_t> actions_;
   std::vector<tensor_element_t> observations_;
 

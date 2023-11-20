@@ -58,6 +58,7 @@ class TrotController : public RLControllerBase {
   std::vector<tensor_element_t> actions_;
   std::vector<tensor_element_t> observations_, commands_;
   std::vector<tensor_element_t> encoderOut_, gaitGeneratorOut_;
+  std::vector<tensor_element_t> proprioHistoryVector_;
   Eigen::Matrix<tensor_element_t, Eigen::Dynamic, 1> proprioHistoryBuffer_;
 };
 

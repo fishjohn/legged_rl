@@ -35,10 +35,8 @@ void TrotController::handleWalkMode() {
     scalar_t actionMax =
         jointPos(i) - defaultJointAngles_(i, 0) +
         (robotCfg_.controlCfg.damping * jointVel(i) + robotCfg_.controlCfg.user_torque_limit) / robotCfg_.controlCfg.stiffness;
-    // scalar_t actionMin = jointPos(i) - defaultJointAngles_(i, 0) - robotCfg_.controlCfg.user_torque_limit /
-    // robotCfg_.controlCfg.stiffness; scalar_t actionMax = jointPos(i) - defaultJointAngles_(i, 0) + robotCfg_.controlCfg.user_torque_limit
-    // / robotCfg_.controlCfg.stiffness;
-    actions_[i] = std::max(actionMin, std::min(actionMax, (scalar_t)actions_[i]));
+    actions_[i] = std::max(actionMin / robotCfg_.controlCfg.actionScale,
+                           std::min(actionMax / robotCfg_.controlCfg.actionScale, (scalar_t)actions_[i]));
     scalar_t pos_des = actions_[i] * robotCfg_.controlCfg.actionScale + defaultJointAngles_(i, 0);
     hybridJointHandles_[i].setCommand(pos_des, 0, robotCfg_.controlCfg.stiffness, robotCfg_.controlCfg.damping, 0);
     lastActions_(i, 0) = actions_[i];
@@ -222,6 +220,7 @@ bool TrotController::loadRLCfg(ros::NodeHandle& nh) {
   observations_.resize(observationSize_);
   commands_.resize(commandsSize_);
   encoderOut_.resize(encoderOutputSize_);
+  proprioHistoryVector_.resize(observationSize_ * obsHistoryLength_);
   gaitGeneratorOut_.resize(gaitGeneratorOutputSize_);
 
   command_.setZero();
@@ -286,7 +285,10 @@ void TrotController::computeEncoder() {
   Ort::MemoryInfo gaitGeneratorMemoryInfo = Ort::MemoryInfo::CreateCpu(OrtAllocatorType::OrtArenaAllocator, OrtMemType::OrtMemTypeDefault);
   std::vector<Ort::Value> gaitGeneratorInputValues;
   std::vector<tensor_element_t> combined_input;
-  for (const auto& item : observations_) {
+  //   for (const auto& item : observations_) {
+  //     combined_input.push_back(item);
+  //   }
+  for (const auto& item : proprioHistoryVector_) {
     combined_input.push_back(item);
   }
   for (const auto& item : commands_) {
@@ -295,6 +297,10 @@ void TrotController::computeEncoder() {
   gaitGeneratorInputValues.push_back(Ort::Value::CreateTensor<tensor_element_t>(gaitGeneratorMemoryInfo, combined_input.data(),
                                                                                 combined_input.size(), gaitGeneratorInputShapes_[0].data(),
                                                                                 gaitGeneratorInputShapes_[0].size()));
+  // for teacher student encoder
+  //   gaitGeneratorInputValues.push_back(
+  //       Ort::Value::CreateTensor<tensor_element_t>(gaitGeneratorMemoryInfo, proprioHistoryBuffer_.data(), proprioHistoryBuffer_.size(),
+  //                                                  gaitGeneratorInputShapes_[0].data(), gaitGeneratorInputShapes_[0].size()));
   Ort::RunOptions gaitGeneratorRunOptions;
   std::vector<Ort::Value> gaitGeneratorOutputValues = gaitGeneratorSessionPtr_->Run(
       gaitGeneratorRunOptions, gaitGeneratorInputNames_.data(), gaitGeneratorInputValues.data(), 1, gaitGeneratorOutputNames_.data(), 1);
@@ -304,6 +310,7 @@ void TrotController::computeEncoder() {
     gaitGeneratorOut_[i] = *(gaitGeneratorOutputValues[0].GetTensorMutableData<tensor_element_t>() + i);
     gaitGeneratorOutNorm += gaitGeneratorOut_[i] * gaitGeneratorOut_[i];
   }
+  // for gait generator
   for (int i = 0; i < gaitGeneratorOutputSize_; i++) {
     gaitGeneratorOut_[i] /= sqrt(gaitGeneratorOutNorm);
   }
@@ -392,6 +399,10 @@ void TrotController::computeObservation() {
   for (size_t i = 0; i < command.size(); i++) {
     commands_[i] = static_cast<tensor_element_t>(command(i));
     // std::cout << commands_[i] << std::endl;
+  }
+  for (size_t i = 0; i < proprioHistoryBuffer_.size(); i++) {
+    proprioHistoryVector_[i] = static_cast<tensor_element_t>(proprioHistoryBuffer_(i));
+    // std::cout << proprioHistoryVector_[i] << std::endl;
   }
   // Limit observation range
   scalar_t obsMin = -robotCfg_.clipObs;

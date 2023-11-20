@@ -24,7 +24,7 @@ LeggedRobotCfg:
     damping: 0.5
     action_scale: 0.25
     decimation: 10
-    user_torque_limit: 400
+    user_torque_limit: 30
 
   normalization:
     clip_scales:
