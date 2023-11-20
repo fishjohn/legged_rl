@@ -116,7 +116,8 @@ void BipedVisionController::computeObservation() {
   // clang-format on
 
   vector_t privExplicit(9);
-  privExplicit.setZero();
+  vector3_t baseLinVel = inverseRot * baseLinVel_;
+  privExplicit << baseLinVel * obsScales.linVel, 0, 0, 0, 0, 0, 0;
 
   vector_t privLatent(17);
   privLatent.setZero();
