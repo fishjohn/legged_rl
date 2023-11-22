@@ -24,7 +24,7 @@ LeggedRobotCfg:
     damping: 0.5
     action_scale: 0.25
     decimation: 10
-    user_torque_limit: 40
+    user_torque_limit: 30
 
   normalization:
     clip_scales:
@@ -43,7 +43,7 @@ LeggedRobotCfg:
     commands_size: 3
     obs_history_length: 5
     encoder_output_size: 3
-    terrain_encoder_output_size: 32
+    gait_generator_output_size: 16
 
 module:
   module_path: "/home/ubuntu/catkin_ws/src/legged_rl/legged_rl_controllers/policy/a1_trot_policy/policy_1.onnx"

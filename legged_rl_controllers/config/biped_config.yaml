@@ -30,4 +30,4 @@ LeggedRobotCfg:
 
   size:
     actions_size: 6
-    observations_size: 28
+    observations_size: 34

@@ -110,6 +110,15 @@ void BipedController::computeObservation() {
     jointVel(i) = hybridJointHandles_[i].getVelocity();
   }
 
+  vector_t gait(4);
+  gait << 2.0, 0.5, 0.5, 0.1;  // trot
+  gait_index_ += 0.02 * gait(0);
+  if (gait_index_ > 1.0) {
+    gait_index_ = 0.0;
+  }
+  vector_t gait_clock(2);
+  gait_clock << sin(gait_index_ * 2 * M_PI), cos(gait_index_ * 2 * M_PI);
+
   // actions
   vector_t actions(lastActions_);
 
@@ -123,7 +132,9 @@ void BipedController::computeObservation() {
       (jointPos - defaultJointAngles_) * obsScales.dofPos,
       jointVel * obsScales.dofVel,
       commandScaler * command, 0.7,
-      actions;
+      actions,
+      gait_clock,
+      gait;
   // clang-format on
 
   for (size_t i = 0; i < obs.size(); i++) {

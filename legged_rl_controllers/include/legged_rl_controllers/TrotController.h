@@ -30,7 +30,7 @@ class TrotController : public RLControllerBase {
   std::shared_ptr<Ort::Env> onnxEnvPrt_;
   std::unique_ptr<Ort::Session> policySessionPtr_;
   std::unique_ptr<Ort::Session> encoderSessionPtr_;
-  std::unique_ptr<Ort::Session> terrainEncoderSessionPtr_;
+  std::unique_ptr<Ort::Session> gaitGeneratorSessionPtr_;
   std::vector<const char*> policyInputNames_;
   std::vector<const char*> policyOutputNames_;
   std::vector<std::vector<int64_t>> policyInputShapes_;
@@ -39,10 +39,10 @@ class TrotController : public RLControllerBase {
   std::vector<const char*> encoderOutputNames_;
   std::vector<std::vector<int64_t>> encoderInputShapes_;
   std::vector<std::vector<int64_t>> encoderOutputShapes_;
-  std::vector<const char*> terrainEncoderInputNames_;
-  std::vector<const char*> terrainEncoderOutputNames_;
-  std::vector<std::vector<int64_t>> terrainEncoderInputShapes_;
-  std::vector<std::vector<int64_t>> terrainEncoderOutputShapes_;
+  std::vector<const char*> gaitGeneratorInputNames_;
+  std::vector<const char*> gaitGeneratorOutputNames_;
+  std::vector<std::vector<int64_t>> gaitGeneratorInputShapes_;
+  std::vector<std::vector<int64_t>> gaitGeneratorOutputShapes_;
 
   vector3_t baseLinVel_;
   vector3_t basePosition_;
@@ -53,11 +53,12 @@ class TrotController : public RLControllerBase {
   int actionsSize_;
   int observationSize_, commandsSize_;
   int obsHistoryLength_;
-  int encoderIntputSize_, encoderOutputSize_, terrainEncoderIntputSize_, terrainEncoderOutputSize_;
+  int encoderIntputSize_, encoderOutputSize_, gaitGeneratorIntputSize_, gaitGeneratorOutputSize_;
   double gait_index_;
   std::vector<tensor_element_t> actions_;
   std::vector<tensor_element_t> observations_, commands_;
-  std::vector<tensor_element_t> encoderOut_, terrainEncoderOut_;
+  std::vector<tensor_element_t> encoderOut_, gaitGeneratorOut_;
+  std::vector<tensor_element_t> proprioHistoryVector_;
   Eigen::Matrix<tensor_element_t, Eigen::Dynamic, 1> proprioHistoryBuffer_;
 };
 
