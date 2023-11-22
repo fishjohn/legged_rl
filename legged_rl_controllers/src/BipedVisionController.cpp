@@ -93,7 +93,7 @@ void BipedVisionController::computeObservation() {
   }
 
   // heights
-  int sampleCount = 121;
+  int sampleCount = 165;
   scalar_t measuredHeight = 0.0;
   scalar_t baseHeight = 0.5;
   vector_t heights(sampleCount);
@@ -177,7 +177,7 @@ bool BipedVisionController::loadModel(ros::NodeHandle& nh) {
   sessionOptions.SetInterOpNumThreads(1);
   Ort::AllocatorWithDefaultOptions allocator;
 
-  ROS_INFO_STREAM("------- load parkour model -------");
+  ROS_INFO_STREAM("------- load biped vision model -------");
   std::string policyFilePath;
   if (!nh.getParam("/policyFile", policyFilePath)) {
     ROS_ERROR_STREAM("Get policy path fail from param server, some error occur!");
@@ -298,6 +298,9 @@ void BipedVisionController::depthImageCallback(const sensor_msgs::Image::ConstPt
   uint32_t imageWidth = msg->width;
   uint32_t imageHeight = msg->height;
   std::string encoding = msg->encoding;
+
+  assert(imageWidth == depthOriginalShape_[0]);
+  assert(imageHeight == depthOriginalShape_[1]);
 
   std::vector<float> imageData;
   uint32_t imageNumPixel = imageWidth * imageHeight;

@@ -364,8 +364,8 @@
         <kd value="100.0"/>
     </gazebo>
     <gazebo reference="foot_L_Link">
-        <mu1>0.6</mu1>
-        <mu2>0.6</mu2>
+        <mu1>2.0</mu1>
+        <mu2>2.0</mu2>
         <self_collide>1</self_collide>
         <material>Gazebo/DarkGrey</material>
         <kp value="1000000.0"/>
@@ -647,8 +647,8 @@
         <kd value="100.0"/>
     </gazebo>
     <gazebo reference="foot_R_Link">
-        <mu1>0.6</mu1>
-        <mu2>0.6</mu2>
+        <mu1>2.0</mu1>
+        <mu2>2.0</mu2>
         <self_collide>1</self_collide>
         <material>Gazebo/DarkGrey</material>
         <kp value="1000000.0"/>
@@ -856,14 +856,14 @@
         </sensor>
         <sensor name="d435Fdepth" type="depth">
             <camera name="d435F">
-                <horizontal_fov>1.4870205226991688</horizontal_fov>
+                <horizontal_fov>1.5184364492350666</horizontal_fov>
                 <image>
-                    <width>424</width>
-                    <height>240</height>
+                    <width>106</width>
+                    <height>60</height>
                 </image>
                 <clip>
-                    <near>0.1</near>
-                    <far>5</far>
+                    <near>0.02</near>
+                    <far>2.0</far>
                 </clip>
                 <noise>
                     <type>gaussian</type>
@@ -872,7 +872,7 @@
                 </noise>
             </camera>
             <always_on>1</always_on>
-            <update_rate>10</update_rate>
+            <update_rate>50</update_rate>
             <visualize>0</visualize>
         </sensor>
     </gazebo>
